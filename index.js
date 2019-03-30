@@ -17,8 +17,8 @@ function renderCalculator() {
     <form class="details">
       <h2 class = "form-title">Enter the Meal Details</h2>
       <span>Base Meal Price: $ <input class = "medium js-meal-price" type="text" placeholder = "9.99"></span></br>
-      <span>Tax Rate: % <input class = "short js-tax-rate" type="text" placeholder = "5"></span></br>
-      <span>Tip Percentage: % <input class = "short js-tip-percentage" type="text" placeholder = "20"></span></br>
+      <span>Tax Rate: % <input class = "short js-tax-rate" type="text" placeholder = "0.1"></span></br>
+      <span>Tip Percentage: % <input class = "short js-tip-percentage" type="text" placeholder = "0.2"></span></br>
       <div class="container3">
         <button type = "submit" class = "button js-submit-button">Submit</button>
         <button type = "reset" class = "button js-cancel-button">Cancel</button>
@@ -33,9 +33,9 @@ function renderCalculator() {
     </div>
     <div class="earnings">
         <h2 class = "form-title">My Earnings Info</h2>
-        <span class = "js-tip-total">Tip Total: 0.00</span></br>
-        <span class="js-meal-count">Meal Count: 0</span></br>
-        <span class="js-average-tip">Average Tip Per Meal: 0.00</span></br>
+        <span class = "js-tip-total">Tip Total: ${calculator.earnings[0].tipTotal.toFixed(2)}</span></br>
+        <span class="js-meal-count">Meal Count: ${calculator.earnings[0].mealCount}</span></br>
+        <span class="js-average-tip">Average Tip Per Meal: ${calculator.earnings[0].averageTip}</span></br>
       </div>
     </div>  
   </div>
@@ -47,18 +47,13 @@ function handleMealSubmit() {
   // this should capture the submission of each meal detail
   $('.details').submit(function(event) {
     event.preventDefault();
-    console.log('hello');
     const mealPrice = parseFloat($('.js-meal-price').val());
-    console.log(mealPrice);
     const taxRate = parseFloat($('.js-tax-rate').val());
     const tipPercentage = parseFloat($('.js-tip-percentage').val());
     const tip = mealPrice * tipPercentage;
     const tax = mealPrice * taxRate;
-    console.log(tax);
     const subtotal = mealPrice + tax;
-    console.log(subtotal);
     const total = tip + subtotal;
-    console.log(total);
     $('.js-subtotal').text(`Subtotal ${subtotal.toFixed(2)}`);
     $('.js-tip').text(`Tip ${tip.toFixed(2)}`);
     $('.js-total').text(`Total ${total.toFixed(2)}`);
@@ -72,6 +67,9 @@ function handleMealSubmit() {
 }
 
 function handleCancel() {
+  $('.js-cancel-button').on('click', function(event) {
+    renderCalculator();
+  });
   // this should only reset the meal details form
 }
 
@@ -94,11 +92,20 @@ function updateMyEarningsInfo() {
 
 function handleResetCalc() {
   // reset the form completely
+  $('.js-reset-button').on('click', function(event) {
+    console.log('hello');
+    calculator.earnings[0].tipTotal = 0;
+    calculator.earnings[0].mealCount = 0;
+    calculator.earnings[0].averageTip = 0;
+    renderCalculator();
+  });
 }
 
 function handleCalculator () {
   renderCalculator();
   handleMealSubmit();
+  handleCancel();
+  handleResetCalc();
   // this should call all event listeners and handlers, as well as the function that renders the page
 }
 
